@@ -5,6 +5,30 @@ let database = {
   nextArticleId: 1
 };
 
+// todo: function to check if user already exists?
+/* todo: function that acts on the nextID to (1) when anything 
+deleted, return that ID using unshift (2) remove 
+number by shift.
+*/
+
+/*
+model for my comments object
+
+,comments = {
+  id:
+  body:
+  username:
+  article_id:
+  upvotedBy:
+  downvotedBy:
+  nextCommentId:
+
+
+}
+
+*/
+
+
 const routes = {
   '/users': {
     'POST': getOrCreateUser
@@ -31,7 +55,9 @@ const routes = {
 
 function getUser(url, request) {
   const username = url.split('/').filter(segment => segment)[1];
+  //  MULL     OVER   the ABOVE  ooooooooooooooooooooooooooooooooooooooo
   const user = database.users[username];
+  // 'user' unpacks to d/u/u/
   const response = {};
 
   if (user) {
@@ -46,6 +72,8 @@ function getUser(url, request) {
     };
     response.status = 200;
   } else if (username) {
+  //  MULL.   NOT sure what username holds. ever.  oooooooooooooooooooooooooooooo
+
     response.status = 404;
   } else {
     response.status = 400;
@@ -119,6 +147,7 @@ function createArticle(url, request) {
   if (requestArticle && requestArticle.title && requestArticle.url &&
       requestArticle.username && database.users[requestArticle.username]) {
     const article = {
+    // BOOKMARK THIS STRUCTURE.  
       id: database.nextArticleId++,
       title: requestArticle.title,
       url: requestArticle.url,
@@ -240,7 +269,10 @@ function downvote(item, username) {
   return item;
 }
 
-// Write all code above this line.
+/********************************************/
+//       Write all code above this line.    //
+/********************************************/
+
 
 const http = require('http');
 const url = require('url');
