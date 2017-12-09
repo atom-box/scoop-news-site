@@ -33,11 +33,32 @@ function Quip(body, username, articleId) {
 	this.downVotedBy = []
 }
 */
+let nextCommentId = [310021];
+
 class Quip {
 	constructor(body, username, articleId) {
+		this._id = this.getId();
+		this._upVotedBy = [];
+		this._downVotedBy = [] ;
+
 		this._body = body;
 		this._username = username;
 		this._articleId = articleId;
+	}
+
+
+	getId(){
+	/* Return new ID, 
+	pop old from stack, 
+	restock if empty */
+ 		const tempId = nextCommentId.shift();
+ 		if (nextCommentId[0]){
+ 		/* Stack is not empty */ 
+ 			return tempId;
+ 		} else {
+ 			nextCommentId.unshift(tempId + 1);
+ 			return tempId;
+ 		}
 	}
 
 	get body() {
@@ -47,8 +68,9 @@ class Quip {
 	set body(s) {
 		this._body = s;
 	}
+ 
 };
 
-
-let nextCommentId = temp1;
+console.log(`(1) Next Id available is: ${nextCommentId} ` )
 let tempComment = new Quip("Minnesota, not Wisconsin.", "Jesse Ventura", nextCommentId);
+console.log(`(2) Next Id available is: ${nextCommentId} ` )
