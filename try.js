@@ -20,6 +20,8 @@ Written by Evan Genest! December 9, 2017 */
 /* initialize SAMPLE DATA */
 
 let temp1 = 33;
+
+/*
 function Quip(body, username, articleId) {
 	this._body = body,
 	this._username = username, 
@@ -30,5 +32,23 @@ function Quip(body, username, articleId) {
 	this.upVotedBy = [],
 	this.downVotedBy = []
 }
+*/
+class Quip {
+	constructor(body, username, articleId) {
+		this._body = body;
+		this._username = username;
+		this._articleId = articleId;
+	}
+
+	get body() {
+		return this._body;
+	}
+
+	set body(s) {
+		this._body = s;
+	}
+};
+
+
 let nextCommentId = temp1;
 let tempComment = new Quip("Minnesota, not Wisconsin.", "Jesse Ventura", nextCommentId);
