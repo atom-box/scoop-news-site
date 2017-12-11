@@ -2,6 +2,8 @@
 let database = {
   users: {},
   articles: {},
+  comments: {},   
+  // I MADE THIS
   nextArticleId: 1
 };
 
@@ -54,6 +56,8 @@ const routes = {
 };
 
 function getUser(url, request) {
+  console.log("Get    User      Function      oooo "); /*********/
+
   const username = url.split('/').filter(segment => segment)[1];
   //  MULL     OVER   the ABOVE  ooooooooooooooooooooooooooooooooooooooo
   const user = database.users[username];
@@ -83,6 +87,7 @@ function getUser(url, request) {
 }
 
 function getOrCreateUser(url, request) {
+  console.log(database.users); /*********/
   const username = request.body && request.body.username;
   const response = {};
 
@@ -108,7 +113,7 @@ function getOrCreateUser(url, request) {
 
 function getArticles(url, request) {
   const response = {};
-
+  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
   response.status = 200;
   response.body = {
     articles: Object.keys(database.articles)
@@ -121,6 +126,8 @@ function getArticles(url, request) {
 }
 
 function getArticle(url, request) {
+  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const article = database.articles[id];
   const response = {};
@@ -141,12 +148,14 @@ function getArticle(url, request) {
 }
 
 function createArticle(url, request) {
+  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+
   const requestArticle = request.body && request.body.article;
   const response = {};
 
-  if (requestArticle && requestArticle.title && requestArticle.url &&
-      requestArticle.username && database.users[requestArticle.username]) {
+  if (requestArticle && requestArticle.title && requestArticle.url && requestArticle.username && database.users[requestArticle.username]) {
     const article = {
+    // the above evaluates true as long as all are initialized, EVEN IF undefined.    
     // BOOKMARK THIS STRUCTURE.  
       id: database.nextArticleId++,
       title: requestArticle.title,
@@ -156,7 +165,7 @@ function createArticle(url, request) {
       upvotedBy: [],
       downvotedBy: []
     };
-
+////////////////////////////////// 12:11 SATURDAY
     database.articles[article.id] = article;
     database.users[article.username].articleIds.push(article.id);
 
@@ -169,7 +178,27 @@ function createArticle(url, request) {
   return response;
 }
 
+/////////////
+// MY SECTION.   IMITATING LINE 150 ABOVE, 'createArticle'
+/////////////
+function createComment(url, request){
+  // test edge cases with lots of &&.   then ELSE IFS ten lines below
+  console.log(`I don't know what to do with this URL: <${url}>`);
+  const comment = {
+    id: database.nextCommentId++, // TODO go create this
+    body: request.comment.body, // worked in IIFE in REPL
+    userName: request.comment.userName,
+    upvotedBy: [],
+    downvotedBy: [],
+    articleId: request.commentArticleId
+  };
+  console.log(`The object built is this: ${comment}`);
+ };
+/////////////
+
 function updateArticle(url, request) {
+  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const savedArticle = database.articles[id];
   const requestArticle = request.body && request.body.article;
