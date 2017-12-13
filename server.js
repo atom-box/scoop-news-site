@@ -221,24 +221,27 @@ function createComment(url, request){
 
 
 function deleteComment(request){
-  let which = (request.split('/'))[2];
+  let whichComment = (request.split('/'))[2];
   /* Split the request string "/comments/1" into three fields.  Keep the last field. */
-  let localArticleId = database.comments[which].articleId;
+  /* WHICH-COMMENT is the comment # to delete */
+  let whichArticle = database.comments[whichComment].articleId;
   /* Get the # of the article. */
-  let articleCommentsArray = database.articles[localArticleId].commentIds;
+  let articleCommentsArray = database.articles[whichArticle].commentIds;
   /* Get an array-of-numbers: All of that-article's comment numbers */
   console.log(`Array nums are <${articleCommentsArray}> COMMENT#s from ARTICLE.  Codeline 228`);
+  /* Find where in the array your target is.*/
+  /* Eliminate that target using the index you found in previous line.*/
 
-  let localUserName = database.comments[which].username;
+  let whichUser = database.comments[whichComment].username;
   /* Get the name of the user. */
-  let userCommentsArray = database.users[localUserName].commentIds;
+  let userCommentsArray = database.users[whichUser].commentIds;
   /* Get an array-of-numbers:  All of that user's comment numbers.  */
   console.log(`Array nums are <${userCommentsArray}> COMMENT#s from USER.  Codeline 228`);
 
 
   // given a comment # find the username
   // given a comment number give the article #
-  delete database.comments[which];
+  delete database.comments[whichComment];
 
 
   database.users[tempComment.username].commentIds.push(tempComment.id);
