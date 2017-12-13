@@ -24,9 +24,9 @@ const routes = {
   '/comments': {
     'POST': createComment   //createComment
   },
+
   '/comments/:id': {
-    'PUT': updateArticle, // SHOULD THIS BE 'comment'? WHO WROTE THIS?
-    'DELETE': deleteArticle // SHOULD THIS BE 'comment'? WHO WROTE THIS?
+    'DELETE': deleteComment // SHOULD THIS BE 'comment'? WHO WROTE THIS?
   },
   //  /  /  /  /  /  /  /  /  /  /  /  /
   '/articles/:id': {
@@ -216,14 +216,38 @@ function createComment(url, request){
     response.status = 404;
   };
   console.log(`Not sure why not getting here.`);
-  // Put in the comment # at database.users[this current username].commentIds.push()
-  // Put in the comment # at database.articles[this comment number].commentIds.push()
-
   return response;
 };
- 
 
+
+function deleteComment(request){
+  let which = (request.split('/'))[2];
+  /* Split the request string "/comments/1" into three fields.  Keep the last field. */
+  let localArticleId = database.comments[which].articleId;
+  /* Get the # of the article. */
+  let articleCommentsArray = database.articles[localArticleId].commentIds;
+  /* Get an array-of-numbers: All of that-article's comment numbers */
+  console.log(`Array nums are <${articleCommentsArray}> COMMENT#s from ARTICLE.  Codeline 228`);
+
+  let localUserName = database.comments[which].username;
+  /* Get the name of the user. */
+  let userCommentsArray = database.users[localUserName].commentIds;
+  /* Get an array-of-numbers:  All of that user's comment numbers.  */
+  console.log(`Array nums are <${userCommentsArray}> COMMENT#s from USER.  Codeline 228`);
+
+
+  // given a comment # find the username
+  // given a comment number give the article #
+  delete database.comments[which];
+
+
+  database.users[tempComment.username].commentIds.push(tempComment.id);
+  database.articles[tempComment.articleId].commentIds.push(tempComment.id);
+  response.status = 202;
+  return response;
+};
 /////////////
+
  /////////////
 
 function updateArticle(url, request) {
