@@ -226,18 +226,37 @@ function deleteComment(request){
   /* WHICH-COMMENT is the comment # to delete */
   let whichArticle = database.comments[whichComment].articleId;
   /* Get the # of the article. */
+  console.log(`Array is this big before: ${database.articles[whichArticle].commentIds.length}`);
   let articleCommentsArray = database.articles[whichArticle].commentIds;
   /* Get an array-of-numbers: All of that-article's comment numbers */
-  console.log(`Array nums are <${articleCommentsArray}> COMMENT#s from ARTICLE.  Codeline 228`);
   /* Find where in the array your target is.*/
   /* Eliminate that target using the index you found in previous line.*/
+  let target = NaN;
+  console.log(`Which Comment is: ${whichComment}`);
+  console.log(`target is${target}`);
+  console.log(`Number 1 and whichComment are deeply equal: ${whichComment === 1  }`);
+  console.log(`Number 1 and typecast-whichComment are deeply equal: ${Number(whichComment) === 1  }`);
+  target = articleCommentsArray.lastIndexOf(1); // WORKED IN REPL WEDN.530PM
+  console.log(`Which Comment is: ${whichComment}`);
+  console.log(`target is${target}`);
+  console.log(`Lookin for: ${whichComment}`);
+  console.log(`TARGET! ${target}`);
+  console.log(`Array before: ${articleCommentsArray}`);
+  console.log("_________2_____3______6__________________");
+  articleCommentsArray.splice(target, 1); //[target];
+  console.log(`Array after: ${articleCommentsArray}`);
+
+  /* The unwanted element is at TARGET.  Remove it!  */
+  console.log(`Array nums are <${articleCommentsArray}> COMMENT#s from ARTICLE.  Codeline 237`);
 
   let whichUser = database.comments[whichComment].username;
   /* Get the name of the user. */
   let userCommentsArray = database.users[whichUser].commentIds;
   /* Get an array-of-numbers:  All of that user's comment numbers.  */
-  console.log(`Array nums are <${userCommentsArray}> COMMENT#s from USER.  Codeline 228`);
-
+  target = userCommentsArray.lastIndexOf(whichComment);
+  delete userCommentsArray[target];
+  console.log(`Array nums are <${userCommentsArray}> COMMENT#s from USER.  Codeline 245`);
+  console.log(`Array is this big after: ${database.articles[whichArticle].commentIds.length}`);
 
   // given a comment # find the username
   // given a comment number give the article #
