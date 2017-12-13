@@ -174,39 +174,48 @@ function createArticle(url, request) {
 // MY SECTION.   
 
 function createComment(url, request){
+  console.log(Object.keys(request.body));
+  console.log(`Next id at 178 is: ${database.nextCommentId}`)
   const response = {};
+  console.log(` c o m m e n t s  at 179 ==${Object.keys(database.comments)}==`);
   if  (true // edge case checking was here but I removed it for now
       ){
-    const comment = {
+    let tempComment = {
       id: database.nextCommentId, 
       body: request.body.comment.body,
-      userName: request.body.comment.userName,
+      username: request.body.comment.username,
       upvotedBy: [],
       downvotedBy: [],
       articleId: request.body.comment.articleId
     };
+ // console.log(" Tues -- From parsing reception should use 'request.body.comment.xxx'  189");
+ // console.log(" Wed -- But I thought tester passed  'body.comment.xxx' Based on the  {body{comment:new}} 190");
+
+    //console.log(`id: ${database.nextCommentId}`);
+    //console.log(`body: ${request.body.comment.body}`);
+    //console.log(`userName: ${request.body.comment.username}`);
+    //console.log(`articleId: ${request.body.comment.articleId}`);
+    //console.log(` k e y s  at 198 ==${Object.keys(database)}==`);
+
+    database.comments[database.nextCommentId] = tempComment;  // Next action: 1) adjust these words 2) write #197
     database.nextCommentId++;
-  console.log("  Executes fine to here now that I use 'request.body.comment.xxx'  189");
+    console.log(`Next id at 203 is: ${database.nextCommentId}`)
 
-    console.log(`id: ${database.nextCommentId}`);
-    console.log(`body: ${request.body.comment.body}`);
-    console.log(`userName: ${request.body.comment.userName}`);
-    console.log(`articleId: ${request.body.comment.articleId}`);
-    console.log(` k e y s  at 195 ==${database.articles}==`);
-    database.comments[0] = comment;  // Next action: 1) adjust these words 2) write #197
-    // Notice!  
-    //  database > comments > 4 > comment > body
-    database.users[comment.userName].commentIds.push(comment.id);
-    console.log(`Body at 200 <${database.users[id].body}>`);
-
+    database.users[tempComment.username].commentIds.push(tempComment.id);
     // works in the repl 2:45 Tuesday afternoon
-    // todo - - return a object called RESPONSE with properties: BODY & STATUS
-    response.body = {comment: comment};
-    response.status = 808;
+    response.body = {comment: tempComment};
+    console.log(` response.body.comment k e y s  at 198 ==${Object.keys(response.body.comment)}==`);
+    response.status = 201;
+    console.log(` response.body.comment keys  at 213 ==${Object.keys(response.body.comment)}==`);
+    console.log(` article id at 214 is ==${response.body.comment.articleId}==`);
+
+
   } else {
     comment.log(" o  --  o      Line 198           I BAILED !   !   !")
     response.status = 404;
   };
+  console.log(`Next id at 215 is: ${database.nextCommentId}`)
+
   return response;
 };
  
@@ -326,32 +335,40 @@ function downvote(item, username) {
   }
   return item;
 }
-/********************************************/
-//       First their Test Code.    //
-/********************************************/
-
-{
-      originalNextCommentId = database.nextCommentId;
-      database.users['existing_user'] = {
-        username: 'existing_user',
-        articleIds: [],
-        commentIds: []
-      };
-      database.articles[1] = {
-        id: 1,
-        title: 'Title',
-        url: 'http://url.com',
-        username: 'existing_user',
-        commentIds: [],
-        upvotedBy: [],
-        downvotedBy: []
-      };
-    });
-/********************************************/
-//       Now My Test Code.    //
-/********************************************/
 
 
+/********************************************/
+//       First, their Test Code.              //
+//          DON'T ERASE.  USEFUL!            //
+/********************************************/
+
+/*database.nextCommentId = 1;
+database.users['existing_user'] = {
+  username: 'existing_user',
+  articleIds: [],
+  commentIds: []
+};
+database.articles[1] = {
+  id: 1,
+  title: 'Title',
+  url: 'http://url.com',
+  username: 'existing_user',
+  commentIds: [],
+  upvotedBy: [],
+  downvotedBy: []
+};
+const newComment = {
+  body: 'Comment Body',
+  username: 'existing_user',
+  articleId: 1
+};*/
+/********************************************/
+//       Now, My Test Code.                 //
+/********************************************/
+/*createComment('some bullshit', newComment);
+createComment('some bullshit', newComment);
+createComment('some bullshit', newComment);
+*/
 
 
 /********************************************/
