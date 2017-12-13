@@ -201,20 +201,23 @@ function createComment(url, request){
     database.nextCommentId++;
     console.log(`Next id at 203 is: ${database.nextCommentId}`)
 
-    database.users[tempComment.username].commentIds.push(tempComment.id);
     // works in the repl 2:45 Tuesday afternoon
     response.body = {comment: tempComment};
     console.log(` response.body.comment k e y s  at 198 ==${Object.keys(response.body.comment)}==`);
     response.status = 201;
     console.log(` response.body.comment keys  at 213 ==${Object.keys(response.body.comment)}==`);
     console.log(` article id at 214 is ==${response.body.comment.articleId}==`);
-
+    console.log(`Gonna try to push ARTICLES here: ${Object.keys(database.articles[tempComment.articleId])}`);
+    database.users[tempComment.username].commentIds.push(tempComment.id);
+    database.articles[tempComment.articleId].commentIds.push(tempComment.id);
 
   } else {
     comment.log(" o  --  o      Line 198           I BAILED !   !   !")
     response.status = 404;
   };
-  console.log(`Next id at 215 is: ${database.nextCommentId}`)
+  console.log(`Not sure why not getting here.`);
+  // Put in the comment # at database.users[this current username].commentIds.push()
+  // Put in the comment # at database.articles[this comment number].commentIds.push()
 
   return response;
 };
