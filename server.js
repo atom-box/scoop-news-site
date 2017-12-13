@@ -4,32 +4,9 @@ let database = {
   articles: {},
   comments: {},   
   // I MADE THIS
-  nextArticleId: 1
+  nextArticleId: 1,
+  nextCommentId: 1
 };
-
-// todo: function to check if user already exists?
-/* todo: function that acts on the nextID to (1) when anything 
-deleted, return that ID using unshift (2) remove 
-number by shift.
-*/
-
-/*
-model for my comments object
-
-,comments = {
-  id:
-  body:
-  username:
-  article_id:
-  upvotedBy:
-  downvotedBy:
-  nextCommentId:
-
-
-}
-
-*/
-
 
 const routes = {
   '/users': {
@@ -42,6 +19,16 @@ const routes = {
     'GET': getArticles,
     'POST': createArticle
   },
+  //  /  /  /  /  /  /  /  /  /  /  /  /
+
+  '/comments': {
+    'POST': createComment   //createComment
+  },
+  '/comments/:id': {
+    'PUT': updateArticle, // SHOULD THIS BE 'comment'? WHO WROTE THIS?
+    'DELETE': deleteArticle // SHOULD THIS BE 'comment'? WHO WROTE THIS?
+  },
+  //  /  /  /  /  /  /  /  /  /  /  /  /
   '/articles/:id': {
     'GET': getArticle,
     'PUT': updateArticle,
@@ -55,8 +42,12 @@ const routes = {
   }
 };
 
+function SNAFU(){
+  console.log('Open your mouth and say "SNFU" ');
+};
+
 function getUser(url, request) {
-  console.log("Get    User      Function      oooo "); /*********/
+  console.log("46 oooo  oooo  oooo  oooo  "); /*********/
 
   const username = url.split('/').filter(segment => segment)[1];
   //  MULL     OVER   the ABOVE  ooooooooooooooooooooooooooooooooooooooo
@@ -87,6 +78,7 @@ function getUser(url, request) {
 }
 
 function getOrCreateUser(url, request) {
+  console.log("Ring the alarm");
   console.log(database.users); /*********/
   const username = request.body && request.body.username;
   const response = {};
@@ -113,7 +105,7 @@ function getOrCreateUser(url, request) {
 
 function getArticles(url, request) {
   const response = {};
-  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+  console.log("102 OoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - 102" ); /*********/
   response.status = 200;
   response.body = {
     articles: Object.keys(database.articles)
@@ -126,7 +118,7 @@ function getArticles(url, request) {
 }
 
 function getArticle(url, request) {
-  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+  console.log("115 OoOOOoOoOOOOOooooOOooo - - -  oOOOoOoOOOOOooooOOooo - - 115" ); /*********/
 
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const article = database.articles[id];
@@ -148,7 +140,7 @@ function getArticle(url, request) {
 }
 
 function createArticle(url, request) {
-  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+  console.log(" line 137 ---- created   article     oOOOoOoOOOOOoOoOOOOOooooOOooo 137" ); /*********/
 
   const requestArticle = request.body && request.body.article;
   const response = {};
@@ -179,25 +171,52 @@ function createArticle(url, request) {
 }
 
 /////////////
-// MY SECTION.   IMITATING LINE 150 ABOVE, 'createArticle'
-/////////////
+// MY SECTION.   
+
 function createComment(url, request){
-  // test edge cases with lots of &&.   then ELSE IFS ten lines below
-  console.log(`I don't know what to do with this URL: <${url}>`);
-  const comment = {
-    id: database.nextCommentId++, // TODO go create this
-    body: request.comment.body, // worked in IIFE in REPL
-    userName: request.comment.userName,
-    upvotedBy: [],
-    downvotedBy: [],
-    articleId: request.commentArticleId
+  const response = {};
+  if  (true // edge case checking was here but I removed it for now
+      ){
+    const comment = {
+      id: database.nextCommentId, 
+      body: request.body.comment.body,
+      userName: request.body.comment.userName,
+      upvotedBy: [],
+      downvotedBy: [],
+      articleId: request.body.comment.articleId
+    };
+    database.nextCommentId++;
+  console.log("  Executes fine to here now that I use 'request.body.comment.xxx'  189");
+
+    console.log(`id: ${database.nextCommentId}`);
+    console.log(`body: ${request.body.comment.body}`);
+    console.log(`userName: ${request.body.comment.userName}`);
+    console.log(`articleId: ${request.body.comment.articleId}`);
+    console.log(` k e y s  at 195 ==${database.articles}==`);
+    database.comments[0] = comment;  // Next action: 1) adjust these words 2) write #197
+    // Notice!  
+    //  database > comments > 4 > comment > body
+    database.users[comment.userName].commentIds.push(comment.id);
+    console.log(`Body at 200 <${database.users[id].body}>`);
+
+    // works in the repl 2:45 Tuesday afternoon
+    // todo - - return a object called RESPONSE with properties: BODY & STATUS
+    response.body = {comment: comment};
+    response.status = 808;
+  } else {
+    comment.log(" o  --  o      Line 198           I BAILED !   !   !")
+    response.status = 404;
   };
-  console.log(`The object built is this: ${comment}`);
- };
+  return response;
+};
+ 
+
 /////////////
+ /////////////
 
 function updateArticle(url, request) {
-  console.log("STARTOoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - STOP" ); /*********/
+
+  console.log("213 oooo  oooo  oooo  oooo  "); /*********/
 
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const savedArticle = database.articles[id];
@@ -220,6 +239,8 @@ function updateArticle(url, request) {
 }
 
 function deleteArticle(url, request) {
+  console.log("236 oooo  oooo  oooo  oooo  "); /*********/
+ 
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const savedArticle = database.articles[id];
   const response = {};
@@ -243,6 +264,8 @@ function deleteArticle(url, request) {
 }
 
 function upvoteArticle(url, request) {
+  console.log("Ring the alarm");
+
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const username = request.body && request.body.username;
   let savedArticle = database.articles[id];
@@ -261,6 +284,8 @@ function upvoteArticle(url, request) {
 }
 
 function downvoteArticle(url, request) {
+  console.log("Ring the alarm");
+
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const username = request.body && request.body.username;
   let savedArticle = database.articles[id];
@@ -279,6 +304,8 @@ function downvoteArticle(url, request) {
 }
 
 function upvote(item, username) {
+  console.log("Ring the upvote");
+
   if (item.downvotedBy.includes(username)) {
     item.downvotedBy.splice(item.downvotedBy.indexOf(username), 1);
   }
@@ -289,6 +316,8 @@ function upvote(item, username) {
 }
 
 function downvote(item, username) {
+  console.log("Ring the downvote");
+
   if (item.upvotedBy.includes(username)) {
     item.upvotedBy.splice(item.upvotedBy.indexOf(username), 1);
   }
@@ -297,6 +326,33 @@ function downvote(item, username) {
   }
   return item;
 }
+/********************************************/
+//       First their Test Code.    //
+/********************************************/
+
+{
+      originalNextCommentId = database.nextCommentId;
+      database.users['existing_user'] = {
+        username: 'existing_user',
+        articleIds: [],
+        commentIds: []
+      };
+      database.articles[1] = {
+        id: 1,
+        title: 'Title',
+        url: 'http://url.com',
+        username: 'existing_user',
+        commentIds: [],
+        upvotedBy: [],
+        downvotedBy: []
+      };
+    });
+/********************************************/
+//       Now My Test Code.    //
+/********************************************/
+
+
+
 
 /********************************************/
 //       Write all code above this line.    //
