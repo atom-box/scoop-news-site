@@ -78,8 +78,6 @@ function getUser(url, request) {
 }
 
 function getOrCreateUser(url, request) {
-  console.log("Ring the alarm");
-  console.log(database.users); /*********/
   const username = request.body && request.body.username;
   const response = {};
 
@@ -212,60 +210,63 @@ function createComment(url, request){
     database.articles[tempComment.articleId].commentIds.push(tempComment.id);
 
   } else {
-    comment.log(" o  --  o      Line 198           I BAILED !   !   !")
-    response.status = 404;
+    console.log(" o  --  o      Line 198           I BAILED !   !   !")
+    response.status = 400;
   };
-  console.log(`Not sure why not getting here.`);
   return response;
 };
 
 
 function deleteComment(request){
-  let whichComment = (request.split('/'))[2];
+  let urlEnd =  (request.split('/'))[2];
+  console.log(`Seems like we want to look for comment <${urlEnd}>`)
+  let whichComment = Number(urlEnd);
+  console.log(`In number terms that is comment <${whichComment}>`)
+
   /* Split the request string "/comments/1" into three fields.  Keep the last field. */
   /* WHICH-COMMENT is the comment # to delete */
+  /* Must be cast from string to number for method LAST-INDEX-OF below*/
+
   let whichArticle = database.comments[whichComment].articleId;
   /* Get the # of the article. */
-  console.log(`Array is this big before: ${database.articles[whichArticle].commentIds.length}`);
+  console.log("$$$$$$$     $$$$$$$     $$$$$$$     ");
+
   let articleCommentsArray = database.articles[whichArticle].commentIds;
   /* Get an array-of-numbers: All of that-article's comment numbers */
   /* Find where in the array your target is.*/
   /* Eliminate that target using the index you found in previous line.*/
-  let target = NaN;
-  console.log(`Which Comment is: ${whichComment}`);
-  console.log(`target is${target}`);
-  console.log(`Number 1 and whichComment are deeply equal: ${whichComment === 1  }`);
-  console.log(`Number 1 and typecast-whichComment are deeply equal: ${Number(whichComment) === 1  }`);
-  target = articleCommentsArray.lastIndexOf(1); // WORKED IN REPL WEDN.530PM
-  console.log(`Which Comment is: ${whichComment}`);
-  console.log(`target is${target}`);
-  console.log(`Lookin for: ${whichComment}`);
-  console.log(`TARGET! ${target}`);
-  console.log(`Array before: ${articleCommentsArray}`);
-  console.log("_________2_____3______6__________________");
-  articleCommentsArray.splice(target, 1); //[target];
-  console.log(`Array after: ${articleCommentsArray}`);
 
+  let target = NaN;
+  target = articleCommentsArray.lastIndexOf(whichComment); // WORKED IN REPL WEDN.530PM
+  console.log(`Remove this item [${whichComment}] from this article [${whichArticle}] at this position [${target}]`);
+  console.log(`Article comments before: ${articleCommentsArray} and length is: ${articleCommentsArray.length}`);
+  articleCommentsArray.splice(target, 1); //[target];
   /* The unwanted element is at TARGET.  Remove it!  */
-  console.log(`Array nums are <${articleCommentsArray}> COMMENT#s from ARTICLE.  Codeline 237`);
+  console.log(`Article comments after: ${articleCommentsArray} and length is: ${articleCommentsArray.length}`);
 
   let whichUser = database.comments[whichComment].username;
   /* Get the name of the user. */
+
   let userCommentsArray = database.users[whichUser].commentIds;
   /* Get an array-of-numbers:  All of that user's comment numbers.  */
+
+  console.log(`User comments before: ${userCommentsArray} and length is: ${userCommentsArray.length}`);
   target = userCommentsArray.lastIndexOf(whichComment);
-  delete userCommentsArray[target];
-  console.log(`Array nums are <${userCommentsArray}> COMMENT#s from USER.  Codeline 245`);
-  console.log(`Array is this big after: ${database.articles[whichArticle].commentIds.length}`);
+  console.log(`Remove this item [${whichComment}] from this user [${whichUser}] at this position [${target}]`);
 
-  // given a comment # find the username
-  // given a comment number give the article #
-  delete database.comments[whichComment];
+  //delete userCommentsArray[target];
+  //delete database.comments[whichComment];
+  userCommentsArray.splice(target, 1); //[target];
+  console.log(`User comments after: ${userCommentsArray} and length is: ${userCommentsArray.length}`);
+  console.log(`database.comments[${target}] = ${database.comments[whichComment]} BEFORE`);
+  database.comments[whichComment] = null;
+  console.log(`database.comments[${target}] = ${database.comments[whichComment]} AFTER`);
+  console.log("_________2_____4______9__________________");
 
-
-  database.users[tempComment.username].commentIds.push(tempComment.id);
-  database.articles[tempComment.articleId].commentIds.push(tempComment.id);
-  response.status = 202;
+  // wtf is this?    database.users[tempComment.username].commentIds.push(tempComment.id);
+  // wtf is this?    database.articles[tempComment.articleId].commentIds.push(tempComment.id);
+  let response = {};
+  response.status = 204;
   return response;
 };
 /////////////
