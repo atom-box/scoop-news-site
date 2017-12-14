@@ -176,25 +176,21 @@ function createComment(url, request){
   console.log(`Next id at 178 is: ${database.nextCommentId}`)
   const response = {};
   console.log(` c o m m e n t s  at 179 ==${Object.keys(database.comments)}==`);
-  if  (true // edge case checking was here but I removed it for now
-      ){
-    let tempComment = {
-      id: database.nextCommentId, 
-      body: request.body.comment.body,
-      username: request.body.comment.username,
-      upvotedBy: [],
-      downvotedBy: [],
-      articleId: request.body.comment.articleId
+  if  (request.body.comment.body && 
+    request.body.comment.username && 
+    request.body.comment.articleId && 
+    database.users[request.body.comment.username]){ 
+    /* FOUR SANITY CHECKS ABOVE (request-obj has ALL 3 fields AND username is for a real user ) */
+
+      let tempComment = {
+       id: database.nextCommentId, 
+       body: request.body.comment.body,
+       username: request.body.comment.username,
+       upvotedBy: [],
+       downvotedBy: [],
+       articleId: request.body.comment.articleId
     };
- // console.log(" Tues -- From parsing reception should use 'request.body.comment.xxx'  189");
- // console.log(" Wed -- But I thought tester passed  'body.comment.xxx' Based on the  {body{comment:new}} 190");
-
-    //console.log(`id: ${database.nextCommentId}`);
-    //console.log(`body: ${request.body.comment.body}`);
-    //console.log(`userName: ${request.body.comment.username}`);
-    //console.log(`articleId: ${request.body.comment.articleId}`);
-    //console.log(` k e y s  at 198 ==${Object.keys(database)}==`);
-
+    
     database.comments[database.nextCommentId] = tempComment;  // Next action: 1) adjust these words 2) write #197
     database.nextCommentId++;
     console.log(`Next id at 203 is: ${database.nextCommentId}`)
