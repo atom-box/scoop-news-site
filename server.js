@@ -26,7 +26,8 @@ const routes = {
   },
 
   '/comments/:id': {
-    'DELETE': deleteComment // SHOULD THIS BE 'comment'? WHO WROTE THIS?
+    'PUT': updateComment,
+    'DELETE': deleteComment
   },
   //  /  /  /  /  /  /  /  /  /  /  /  /
   '/articles/:id': {
@@ -39,6 +40,13 @@ const routes = {
   },
   '/articles/:id/downvote': {
     'PUT': downvoteArticle
+  }
+  ,
+  '/comments/:id/upvote': {
+    'PUT': upvoteComment
+  },
+  '/comments/:id/downvote': {
+    'PUT': downvoteComment
   }
 };
 
@@ -179,7 +187,8 @@ function createComment(url, request){
   if  (request.body.comment.body && 
     request.body.comment.username && 
     request.body.comment.articleId && 
-    database.users[request.body.comment.username]){ 
+    database.users[request.body.comment.username] &&
+    database.articles[request.body.comment.articleId] ){ 
     /* FOUR SANITY CHECKS ABOVE (request-obj has ALL 3 fields AND username is for a real user ) */
 
       let tempComment = {
@@ -190,7 +199,7 @@ function createComment(url, request){
        downvotedBy: [],
        articleId: request.body.comment.articleId
     };
-    
+
     database.comments[database.nextCommentId] = tempComment;  // Next action: 1) adjust these words 2) write #197
     database.nextCommentId++;
     console.log(`Next id at 203 is: ${database.nextCommentId}`)
@@ -212,9 +221,17 @@ function createComment(url, request){
   return response;
 };
 
+function updateComment(url, request){
+  let urlEnd =  (url.split('/'))[2];
+  let whichComment = Number(urlEnd);
+  console.log(`Seems like we want to look for comment <${urlEnd}>`);
+  console.log(`In number terms that is comment <${whichComment}>`);
+  let newBody = request.comment;
+  console.log(`Gonna print this ${newBody}`);
+};
 
-function deleteComment(request){
-  let urlEnd =  (request.split('/'))[2];
+function deleteComment(url){
+  let urlEnd =  (url.split('/'))[2];
   console.log(`Seems like we want to look for comment <${urlEnd}>`)
   let whichComment = Number(urlEnd);
   console.log(`In number terms that is comment <${whichComment}>`)
@@ -358,6 +375,17 @@ function downvoteArticle(url, request) {
   return response;
 }
 
+function upvoteComment(url, request){
+  // hubba hubba
+}
+
+function downvoteComment(url, request){
+  // hubba hubba
+}
+
+
+
+
 function upvote(item, username) {
   console.log("Ring the upvote");
 
@@ -382,39 +410,6 @@ function downvote(item, username) {
   return item;
 }
 
-
-/********************************************/
-//       First, their Test Code.              //
-//          DON'T ERASE.  USEFUL!            //
-/********************************************/
-
-/*database.nextCommentId = 1;
-database.users['existing_user'] = {
-  username: 'existing_user',
-  articleIds: [],
-  commentIds: []
-};
-database.articles[1] = {
-  id: 1,
-  title: 'Title',
-  url: 'http://url.com',
-  username: 'existing_user',
-  commentIds: [],
-  upvotedBy: [],
-  downvotedBy: []
-};
-const newComment = {
-  body: 'Comment Body',
-  username: 'existing_user',
-  articleId: 1
-};*/
-/********************************************/
-//       Now, My Test Code.                 //
-/********************************************/
-/*createComment('some bullshit', newComment);
-createComment('some bullshit', newComment);
-createComment('some bullshit', newComment);
-*/
 
 
 /********************************************/
