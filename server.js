@@ -222,20 +222,36 @@ function createComment(url, request){
 };
 
 function updateComment(url, request){
-  console.log('ooooooUoPoDoAoToEooooooooooooooooo');
   let urlEnd =  (url.split('/'))[2];
   let whichComment = Number(urlEnd);
-  console.log(`Seems like we want to look for comment <${urlEnd}>`);
-  console.log(`In number terms that is comment <${whichComment}>`);
-  let newBody = request.body.comment.body;
-  console.log(`Keys of request.body.comment [${Object.keys(request.body.comment)}]`);
-  console.log(`Gonna write this witticism [${newBody}]`);
-  database.comments[whichComment].body = newBody;
-  let response = {};
-  response.status = 200;
-  response.comment = newBody
-  return response;
-   
+  if (request.body.comment.body && database.comments[whichComment]){  // HASbody && comment-#-EXISTS
+    console.log("a             a            a          226  a  a  a  a  a  a  a  a  a  a");
+
+    console.log(`Seems like we want to look for comment <${whichComment}>`);
+    console.log(`In database, these are the existing comments <${Object.keys(database.comments)}>`);
+    let newBody = request.body.comment.body;
+    console.log(`Keys of request.body.comment ANY STOWAWAY HERE? [${Object.keys(request.body.comment)}]`);
+    console.log(`ID [${request.body.comment.id}]`);
+    console.log(`BODY [${request.body.comment.body}]`);
+    console.log(`USERNAME [${request.body.comment.username}]`);
+    console.log(`ARTICLE ID [${request.body.comment.articleId}]`);
+
+    console.log(`Gonna write this witticism [${newBody}]`);
+    database.comments[whichComment].body = newBody;
+    let response = {};
+    response.status = 200;
+    response.comment = newBody;
+    return response;
+  } else if (request.body.comment.body && whichComment ) { // HASID && HASCOMMENT
+    console.log("b             b            b            240   b  b  b  b  b  b b b  b  b  b");
+    response.status = 404; 
+    return response;
+
+  } else {// the only cases getting here will have: 1)just id or 2)just comment or 3)nothing at all
+    console.log("c             c            c            245 c  c  c  c c  c c c c  c  c  c  c");
+    response.status = 400;
+    return response;
+  };
 };
 
 function deleteComment(url){
