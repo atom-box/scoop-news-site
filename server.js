@@ -198,7 +198,7 @@ function createComment(url, request){
        upvotedBy: [],
        downvotedBy: [],
        articleId: request.body.comment.articleId
-    };
+      };
 
     database.comments[database.nextCommentId] = tempComment;  // Next action: 1) adjust these words 2) write #197
     database.nextCommentId++;
@@ -222,12 +222,20 @@ function createComment(url, request){
 };
 
 function updateComment(url, request){
+  console.log('ooooooUoPoDoAoToEooooooooooooooooo');
   let urlEnd =  (url.split('/'))[2];
   let whichComment = Number(urlEnd);
   console.log(`Seems like we want to look for comment <${urlEnd}>`);
   console.log(`In number terms that is comment <${whichComment}>`);
-  let newBody = request.comment;
-  console.log(`Gonna print this ${newBody}`);
+  let newBody = request.body.comment.body;
+  console.log(`Keys of request.body.comment [${Object.keys(request.body.comment)}]`);
+  console.log(`Gonna write this witticism [${newBody}]`);
+  database.comments[whichComment].body = newBody;
+  let response = {};
+  response.status = 200;
+  response.comment = newBody
+  return response;
+   
 };
 
 function deleteComment(url){
