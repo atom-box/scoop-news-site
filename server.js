@@ -235,13 +235,15 @@ function updateComment(url, request){
   let response = {};
   console.log("Hello no request error.");
   console.log(`The url body: [${url}]`);
-  console.log(`The request body: [${request}]`);
-  console.log(`The request body KEYS: [${Object.keys(request).length}]`);
-  if (0 == (Object.keys(request))){
+  if (0 == (Object.keys(request)) ||
+      0 == (Object.keys(request.body)) ||
+      0 == (Object.keys(request.body.comment))  ){
     console.log("No request body.  Really?")
     response = {status: 400};
     return response;
   };
+  console.log(`The request r.b.c KEYS: [${Object.keys(request.body.comment)}]`);
+  console.log(`The request r KEYS: [${Object.keys(request).length}]`);
   let urlEnd =  (url.split('/'))[2];
   let whichComment = Number(urlEnd);
   if (
@@ -291,15 +293,17 @@ function updateComment(url, request){
 };
 
 function deleteComment(url){
+  let response = {};
   let urlEnd =  (url.split('/'))[2];
-  console.log(`Seems like we want to look for comment <${urlEnd}>`)
-  let whichComment = Number(urlEnd);
-  console.log(`In number terms that is comment <${whichComment}>`)
-
+  let whichComment = Number(urlEnd); 
   /* Split the request string "/comments/1" into three fields.  Keep the last field. */
   /* WHICH-COMMENT is the comment # to delete */
   /* Must be cast from string to number for method LAST-INDEX-OF below*/
-
+  if (!database.comments[whichComment]){
+    console.log(`No comment [${whichComment}] in [${Object.keys(database.comments)}] `);
+    response.status = 404;
+    return response;
+  };
   let whichArticle = database.comments[whichComment].articleId;
   /* Get the # of the article. */
   console.log("$$$$$$$     $$$$$$$     $$$$$$$     ");
@@ -338,7 +342,6 @@ function deleteComment(url){
 
   // wtf is this?    database.users[tempComment.username].commentIds.push(tempComment.id);
   // wtf is this?    database.articles[tempComment.articleId].commentIds.push(tempComment.id);
-  let response = {};
   response.status = 204;
   return response;
 };
