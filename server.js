@@ -1,5 +1,46 @@
-// database is let instead of const to allow us to modify it in test.js
+/****************************************************
+/*  PROJECT V1.0  THE SCOOP (a Reddit clone)
+/*  This program was completed for the 
+/*  Codecademy course "Build Your Own API's"
+/*
+/*  To run this program:
+/*  1) Open index.html in a browser
+/*  2) In a terminal enter this command:  node server.js
+/*  3) As long as you have all the files that came in this package
+/*    The Scoop should work.   Functionality: you should see a sort 
+/*    of newspost bulletin board that you can upvote/downvote the 
+/*    articles and comments.
+/*  4) Big downside:  it is not yet persistant.  
+/*      Implementing YAML for persistance was extra credit.  I am behind 
+/*      schedule in this course, though.  I would love to 
+/*      come back and make this work and put it in my resume.
+/*
+/*  By Evan Genest
+/*  https://github.com/atom-box/ 
+/*  Twitter@MisterGenest 
+/*  started December 9, 2017 
+/*  finished December 15 (with 2 days off)
+/*
+/*  Total time it took me:  
+/*  TWENTY SEVEN HOURS!!   (I keep a timesheet.)
+/*  
+/*  DESCRIPTION:  server.js is part of Unit 3:The Scoop 
+/*  The scoop has like nine files, written 
+in javascript and node.js.   
+/*  The school, Codecademy wrote the longer files, 
+including the HTML and the functionality for 
+/*  much of the website. 
+/*
+/*  My job was to figure out the existing data logic 
+and extend their program to allow users to comment on news stories.  
+This program was completed for the Codecademy course "Build Your Own API's"
+Written by Evan Genest! December 9, 2017 */
+
+
+
 let database = {
+/* I was too nervous to use CONST.   Used LET.  Too scared of contributing to subtle bugs.  Still don't trust CONST to let me MUTATE things. [NOTE: Just finished project.  All tests pass.  FOUR TESTS FAIL if I change this to CONST.   Too tired to investigate further.] */ 
+
   users: {},
   articles: {},
   comments: {},   
@@ -55,8 +96,6 @@ function SNAFU(){
 };
 
 function getUser(url, request) {
-  console.log("46 oooo  oooo  oooo  oooo  "); /*********/
-
   const username = url.split('/').filter(segment => segment)[1];
   //  MULL     OVER   the ABOVE  ooooooooooooooooooooooooooooooooooooooo
   const user = database.users[username];
@@ -111,7 +150,6 @@ function getOrCreateUser(url, request) {
 
 function getArticles(url, request) {
   const response = {};
-  console.log("102 OoOOOoOoOOOOOooooOOooo - - - " + database.articles + "OoOOOoOoOOOOOooooOOooo - - 102" ); /*********/
   response.status = 200;
   response.body = {
     articles: Object.keys(database.articles)
@@ -124,8 +162,6 @@ function getArticles(url, request) {
 }
 
 function getArticle(url, request) {
-  console.log("115 OoOOOoOoOOOOOooooOOooo - - -  oOOOoOoOOOOOooooOOooo - - 115" ); /*********/
-
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const article = database.articles[id];
   const response = {};
@@ -146,8 +182,6 @@ function getArticle(url, request) {
 }
 
 function createArticle(url, request) {
-  console.log(" line 137 ---- created   article     oOOOoOoOOOOOoOoOOOOOooooOOooo 137" ); /*********/
-
   const requestArticle = request.body && request.body.article;
   const response = {};
 
@@ -163,7 +197,6 @@ function createArticle(url, request) {
       upvotedBy: [],
       downvotedBy: []
     };
-////////////////////////////////// 12:11 SATURDAY
     database.articles[article.id] = article;
     database.users[article.username].articleIds.push(article.id);
 
@@ -176,19 +209,20 @@ function createArticle(url, request) {
   return response;
 }
 
-/////////////
-// MY SECTION.   
+/////////////////////////////////
+// MY SECTION: from here, down.//  
+/////////////////////////////////
 
 function createComment(url, request){
-  console.log("hello error no. 1");
+  /* I found out about the incoming request object by 
+  a lot of trial and error.  The request-object was a black box to me so
+  I just succesively used console.log(Object.keys(requst) to
+  succesively peel away the layers of this object.     ) */
   if (!request.body){
     const response = {status: 400};
     return response;
   };
-  console.log(Object.keys(request.body));
-  console.log(`Next id at 178 is: ${database.nextCommentId}`)
   const response = {};
-  console.log(` c o m m e n t s  at 186 in the d.b.:[${Object.keys(database.comments)} ]==`);
   if  (
     request &&
     request.body &&
@@ -198,7 +232,8 @@ function createComment(url, request){
     request.body.comment.articleId && 
     database.users[request.body.comment.username] &&
     database.articles[request.body.comment.articleId] ){ 
-    /* FOUR SANITY CHECKS ABOVE (request-obj has ALL 3 fields AND username is for a real user ) */
+    /* more than FOUR SANITY CHECKS ABOVE (request-obj has 
+    ALL 3 fields AND username is for a real user ) */
 
       let tempComment = {
        id: database.nextCommentId, 
@@ -208,87 +243,59 @@ function createComment(url, request){
        downvotedBy: [],
        articleId: request.body.comment.articleId
       };
+      /* id increments.  id's from deleted comments don't recycle to here */
+      /* body, username, and article id are set from properties in the request object */
+      /**/
 
-    database.comments[database.nextCommentId] = tempComment;  // Next action: 1) adjust these words 2) write #197
+    database.comments[database.nextCommentId] = tempComment;  
     database.nextCommentId++;
-    console.log(`Next id at 203 is: ${database.nextCommentId}`)
-
-    // works in the repl 2:45 Tuesday afternoon
+    // works in the Node repl 2:45 Tuesday afternoon
     response.body = {comment: tempComment};
     console.log(` response.body.comment k e y s  at 198 ==${Object.keys(response.body.comment)}==`);
     response.status = 201;
-    console.log(` response.body.comment keys  at 213 ==${Object.keys(response.body.comment)}==`);
-    console.log(` article id at 214 is ==${response.body.comment.articleId}==`);
-    console.log(`Gonna try to push ARTICLES here: ${Object.keys(database.articles[tempComment.articleId])}`);
     database.users[tempComment.username].commentIds.push(tempComment.id);
     database.articles[tempComment.articleId].commentIds.push(tempComment.id);
 
   } else {
-    console.log(" o  --  o      Line 198           I BAILED !   !   !")
     response.status = 400;
   };
-  console.log(`About to RETURN code[${response.status}] & status[${response.body}]`);
   return response;
 };
 
 function updateComment(url, request){
   let response = {};
-  console.log("Hello no request error.");
-  console.log(`The url body: [${url}]`);
   if (0 == (Object.keys(request)) ||
       0 == (Object.keys(request.body)) ||
       0 == (Object.keys(request.body.comment))  ){
-    console.log("No request body.  Really?")
+    /* To do: sanity checks should be refactored if more time.   */
     response = {status: 400};
     return response;
   };
-  console.log(`The request r.b.c KEYS: [${Object.keys(request.body.comment)}]`);
-  console.log(`The request r KEYS: [${Object.keys(request).length}]`);
   let urlEnd =  (url.split('/'))[2];
   let whichComment = Number(urlEnd);
   if (
     request.body.comment.body && 
     database.comments[whichComment]
+    // Sanity check for edge cases: HASbody && comment-#-EXISTS
     )
-  {  // HASbody && comment-#-EXISTS
 
-    console.log(`Seems like we want to look for comment <${whichComment}>`);
-    console.log(`In database, these are the existing comments <${Object.keys(database.comments)}>`);
+    {
     let newBody = request.body.comment.body;
-    console.log(`Keys of request.body.comment ANY STOWAWAY HERE? [${Object.keys(request.body.comment)}]`);
-    console.log(`ID [${request.body.comment.id}]`);
-    console.log(`BODY [${request.body.comment.body}]`);
-    console.log(`USERNAME [${request.body.comment.username}]`);
-    console.log(`ARTICLE ID [${request.body.comment.articleId}]`);
-
-    console.log(`Gonna write this witticism [${newBody}]`);
     database.comments[whichComment].body = newBody;
-
     response.status = 200;
     response.comment = newBody;
-    console.log("a             a            a          226  a  a  a  a  a  a  a  a  a  a");
 
   } else if (request.body.comment.body && whichComment ) { // HASID && HASCOMMENT
     response.body = {body: request.body.comment.body};
     response.status = 404; 
-    console.log("b             b            b            240   b  b  b  b  b  b b b  b  b  b");
 
-  } else {// the only cases getting here will have: 1)just id or 2)just comment or 3)nothing at all
-    console.log(`Keys of request.body.comment ANY STOWAWAY HERE? [${Object.keys(request.body.comment)}]`);
-    console.log(`ID [${request.body.comment.id}]`);
-    console.log(`BODY [${request.body.comment.body}]`);
-    console.log(`USERNAME [${request.body.comment.username}]`);
-    console.log(`ARTICLE ID [${request.body.comment.articleId}]`);
-    console.log(`Line 262 of test thinks database.comments[1].body is empty.  Here it is: [${database.comments[1].body}]`);
+  } else {
+    // the only cases getting here will have either: 
+    // 1)just id or 2)just comment or 3)nothing at all
     response.status = 200;
     response.body = {body: request.body.comment.body};
-    console.log("c             c            c            245 c  c  c  c c  c c c c  c  c  c  c");
 
   };
-  console.log("ddddddddddddddddddddddddddd");
-  console.log(`About to RETURN code[${response.status}] & status[${response.body}]`);
-  console.log("eeeeeeeeeeeeeeeeeeeeeeeeeee");
-
   return response;
 };
 
@@ -299,6 +306,7 @@ function deleteComment(url){
   /* Split the request string "/comments/1" into three fields.  Keep the last field. */
   /* WHICH-COMMENT is the comment # to delete */
   /* Must be cast from string to number for method LAST-INDEX-OF below*/
+
   if (!database.comments[whichComment]){
     console.log(`No comment [${whichComment}] in [${Object.keys(database.comments)}] `);
     response.status = 404;
@@ -306,7 +314,6 @@ function deleteComment(url){
   };
   let whichArticle = database.comments[whichComment].articleId;
   /* Get the # of the article. */
-  console.log("$$$$$$$     $$$$$$$     $$$$$$$     ");
 
   let articleCommentsArray = database.articles[whichArticle].commentIds;
   /* Get an array-of-numbers: All of that-article's comment numbers */
@@ -315,11 +322,8 @@ function deleteComment(url){
 
   let target = NaN;
   target = articleCommentsArray.lastIndexOf(whichComment); // WORKED IN REPL WEDN.530PM
-  console.log(`Remove this item [${whichComment}] from this article [${whichArticle}] at this position [${target}]`);
-  console.log(`Article comments before: ${articleCommentsArray} and length is: ${articleCommentsArray.length}`);
   articleCommentsArray.splice(target, 1); //[target];
   /* The unwanted element is at TARGET.  Remove it!  */
-  console.log(`Article comments after: ${articleCommentsArray} and length is: ${articleCommentsArray.length}`);
 
   let whichUser = database.comments[whichComment].username;
   /* Get the name of the user. */
@@ -327,32 +331,18 @@ function deleteComment(url){
   let userCommentsArray = database.users[whichUser].commentIds;
   /* Get an array-of-numbers:  All of that user's comment numbers.  */
 
-  console.log(`User comments before: ${userCommentsArray} and length is: ${userCommentsArray.length}`);
   target = userCommentsArray.lastIndexOf(whichComment);
-  console.log(`Remove this item [${whichComment}] from this user [${whichUser}] at this position [${target}]`);
+  userCommentsArray.splice(target, 1);
+  // delete!
 
-  //delete userCommentsArray[target];
-  //delete database.comments[whichComment];
-  userCommentsArray.splice(target, 1); //[target];
-  console.log(`User comments after: ${userCommentsArray} and length is: ${userCommentsArray.length}`);
-  console.log(`database.comments[${target}] = ${database.comments[whichComment]} BEFORE`);
   database.comments[whichComment] = null;
-  console.log(`database.comments[${target}] = ${database.comments[whichComment]} AFTER`);
-  console.log("_________2_____4______9__________________");
+  // a different way to delete.  seems funtionally the same as using 'delete'
 
-  // wtf is this?    database.users[tempComment.username].commentIds.push(tempComment.id);
-  // wtf is this?    database.articles[tempComment.articleId].commentIds.push(tempComment.id);
   response.status = 204;
   return response;
 };
-/////////////
-
- /////////////
 
 function updateArticle(url, request) {
-
-  console.log("213 oooo  oooo  oooo  oooo  "); /*********/
-
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const savedArticle = database.articles[id];
   const requestArticle = request.body && request.body.article;
@@ -365,17 +355,13 @@ function updateArticle(url, request) {
   } else {
     savedArticle.title = requestArticle.title || savedArticle.title;
     savedArticle.url = requestArticle.url || savedArticle.url;
-
     response.body = {article: savedArticle};
     response.status = 200;
   }
-
   return response;
 }
 
 function deleteArticle(url, request) {
-  console.log("236 oooo  oooo  oooo  oooo  "); /*********/
- 
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const savedArticle = database.articles[id];
   const response = {};
@@ -394,7 +380,6 @@ function deleteArticle(url, request) {
   } else {
     response.status = 400;
   }
-
   return response;
 }
 
@@ -403,12 +388,11 @@ function upvoteArticle(url, request) {
   const username = request.body && request.body.username;
   let savedArticle = database.articles[id];
   const response = {};
-
   if (savedArticle && database.users[username]) {
     savedArticle = upvote(savedArticle, username);
-
     response.body = {article: savedArticle};
     response.status = 200;
+
   } else {
     response.status = 400;
   }
@@ -424,25 +408,26 @@ function downvoteArticle(url, request) {
 
   if (savedArticle && database.users[username]) {
     savedArticle = downvote(savedArticle, username);
-
     response.body = {article: savedArticle};
     response.status = 200;
   } else {
     response.status = 400;
   }
-
   return response;
 }
 
 function upvoteComment(url, request){
- const id = Number(url.split('/').filter(segment => segment)[1]);
+  /* I used the built in up/down vote fns from Codec.          */
+  const id = Number(url.split('/').filter(segment => segment)[1]);
   const username = request.body && request.body.username;
+  /* I assume this is edge-case checking.  I was too tired to look at it 
+  for more than 10 minutes.   Seems to work so trust it.  
+  That's either 'argument from authority' or 'abstraction'.           */
   let savedComment = database.comments[id];
   const response = {};
 
   if (savedComment && database.users[username]) {
     savedComment = upvote(savedComment, username);
-
     response.body = {comment: savedComment};
     response.status = 200;
   } else {
@@ -457,10 +442,8 @@ function downvoteComment(url, request){
   const username = request.body && request.body.username;
   let savedComment = database.comments[id];
   const response = {};
-
   if (savedComment && database.users[username]) {
     savedComment = downvote(savedComment, username);
-
     response.body = {comment: savedComment};
     response.status = 200;
   } else {
@@ -470,15 +453,13 @@ function downvoteComment(url, request){
 }
 
 
-
-
 function upvote(item, username) {
-  /* This is a built-by-Udacity function                                                  */
+  /* This is a built-by-Codecademy function.  Thank you!!                                    */
   /* First if-statement checks for and then removes any contrary voting by that person    */
   /* Second if-statement checks for and then adds upvote to the Array via push            */
   /* The coolpart is that the new, altered arrays are returned in the response body where */
   /* the hidden backend stuff will overwrite the now-obsolete arrays.                     */
-  /* The concision and clarity of this Udacity-written function are to be aspired to!     */
+  /* The concision and clarity of this Codecademy-written function are to be aspired to!     */
 
   if (item.downvotedBy.includes(username)) {
     item.downvotedBy.splice(item.downvotedBy.indexOf(username), 1);
