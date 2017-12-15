@@ -180,11 +180,20 @@ function createArticle(url, request) {
 // MY SECTION.   
 
 function createComment(url, request){
+  console.log("hello error no. 1");
+  if (!request.body){
+    const response = {status: 400};
+    return response;
+  };
   console.log(Object.keys(request.body));
   console.log(`Next id at 178 is: ${database.nextCommentId}`)
   const response = {};
-  console.log(` c o m m e n t s  at 179 ==${Object.keys(database.comments)}==`);
-  if  (request.body.comment.body && 
+  console.log(` c o m m e n t s  at 186 in the d.b.:[${Object.keys(database.comments)} ]==`);
+  if  (
+    request &&
+    request.body &&
+    request.body.comment &&
+    request.body.comment.body && 
     request.body.comment.username && 
     request.body.comment.articleId && 
     database.users[request.body.comment.username] &&
@@ -218,14 +227,28 @@ function createComment(url, request){
     console.log(" o  --  o      Line 198           I BAILED !   !   !")
     response.status = 400;
   };
+  console.log(`About to RETURN code[${response.status}] & status[${response.body}]`);
   return response;
 };
 
 function updateComment(url, request){
+  let response = {};
+  console.log("Hello no request error.");
+  console.log(`The url body: [${url}]`);
+  console.log(`The request body: [${request}]`);
+  console.log(`The request body KEYS: [${Object.keys(request).length}]`);
+  if (0 == (Object.keys(request))){
+    console.log("No request body.  Really?")
+    response = {status: 400};
+    return response;
+  };
   let urlEnd =  (url.split('/'))[2];
   let whichComment = Number(urlEnd);
-  let response = {};
-  if (request.body.comment.body && database.comments[whichComment]){  // HASbody && comment-#-EXISTS
+  if (
+    request.body.comment.body && 
+    database.comments[whichComment]
+    )
+  {  // HASbody && comment-#-EXISTS
 
     console.log(`Seems like we want to look for comment <${whichComment}>`);
     console.log(`In database, these are the existing comments <${Object.keys(database.comments)}>`);
