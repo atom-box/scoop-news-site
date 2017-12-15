@@ -399,8 +399,6 @@ function deleteArticle(url, request) {
 }
 
 function upvoteArticle(url, request) {
-  console.log("Ring the alarm");
-
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const username = request.body && request.body.username;
   let savedArticle = database.articles[id];
@@ -419,8 +417,6 @@ function upvoteArticle(url, request) {
 }
 
 function downvoteArticle(url, request) {
-  console.log("Ring the alarm");
-
   const id = Number(url.split('/').filter(segment => segment)[1]);
   const username = request.body && request.body.username;
   let savedArticle = database.articles[id];
@@ -439,18 +435,50 @@ function downvoteArticle(url, request) {
 }
 
 function upvoteComment(url, request){
-  // hubba hubba
+ const id = Number(url.split('/').filter(segment => segment)[1]);
+  const username = request.body && request.body.username;
+  let savedComment = database.comments[id];
+  const response = {};
+
+  if (savedComment && database.users[username]) {
+    savedComment = upvote(savedComment, username);
+
+    response.body = {comment: savedComment};
+    response.status = 200;
+  } else {
+    response.status = 400;
+  }
+  return response;
 }
 
+
 function downvoteComment(url, request){
-  // hubba hubba
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const username = request.body && request.body.username;
+  let savedComment = database.comments[id];
+  const response = {};
+
+  if (savedComment && database.users[username]) {
+    savedComment = downvote(savedComment, username);
+
+    response.body = {comment: savedComment};
+    response.status = 200;
+  } else {
+    response.status = 400;
+  }
+  return response;
 }
 
 
 
 
 function upvote(item, username) {
-  console.log("Ring the upvote");
+  /* This is a built-by-Udacity function                                                  */
+  /* First if-statement checks for and then removes any contrary voting by that person    */
+  /* Second if-statement checks for and then adds upvote to the Array via push            */
+  /* The coolpart is that the new, altered arrays are returned in the response body where */
+  /* the hidden backend stuff will overwrite the now-obsolete arrays.                     */
+  /* The concision and clarity of this Udacity-written function are to be aspired to!     */
 
   if (item.downvotedBy.includes(username)) {
     item.downvotedBy.splice(item.downvotedBy.indexOf(username), 1);
@@ -462,8 +490,6 @@ function upvote(item, username) {
 }
 
 function downvote(item, username) {
-  console.log("Ring the downvote");
-
   if (item.upvotedBy.includes(username)) {
     item.upvotedBy.splice(item.upvotedBy.indexOf(username), 1);
   }
